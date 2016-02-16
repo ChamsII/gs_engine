@@ -5,10 +5,10 @@ var restify = require('restify');
 var async = require('async');
 var winston = require('winston');
 
-var dataAccess = require('./core/dataAccess/genesisDataAccess');
-var serverContext = require('./core/genesisContext');
-var steps = require('./core/genesisSteps');
-var runContext = require('./core/runContext');
+var dataAccess = require('./lib/core/dataAccess/genesisDataAccess');
+var serverContext = require('./lib/core/genesisContext');
+var steps = require('./lib/core/genesisSteps');
+var runContext = require('./lib/core/runContext');
 
 
 global.logger = new (winston.Logger)({

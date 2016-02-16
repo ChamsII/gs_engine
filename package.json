@@ -1,10 +1,10 @@
 {
   "name": "Genesis",
   "version": "0.1.0",
-  "description": "Genesis",
-  "main": "Genesis.js",
+  "description": "Générateur et Simulateur de services",
+  "main": "genesis.js",
   "scripts": {
-	"start": "node Genesis.js",
+	"start": "node genesis.js",
     "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
   },
   "dependencies": {
@@ -15,14 +15,13 @@
     "elementtree": "x",
     "dateformat": "x",
     "restify": "x",
-    "bunyan": "x",
     "dot": "x"
   },
   "repository": "",
   "keywords": [
     "Node.js"
   ],
-  "author": "",
-  "license": "BSD",
+  "author": "Ju-Li-An",
+  "license": "GNU",
   "readmeFilename": "README.md"
 }
