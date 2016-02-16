@@ -1,24 +1,24 @@
-global.config = require('./config.json');
-
-var cluster = require('cluster');
 var restify = require('restify');
 var async = require('async');
 var winston = require('winston');
+var throng = require('throng');
 
 var dataAccess = require('./lib/core/dataAccess/genesisDataAccess');
 var serverContext = require('./lib/core/genesisContext');
 var steps = require('./lib/core/genesisSteps');
 var runContext = require('./lib/core/runContext');
 
+var env = process.env;
+var WORKERS = process.env.WEB_CONCURRENCY || 2;
 
 global.logger = new (winston.Logger)({
      transports: [
-             new (winston.transports.Console)({ 'timestamp': 'true', level: config.log.lvlConsole }),
-             new (winston.transports.File)({ filename: config.log.filename ,json:false, maxsize:config.log.maxsize,maxFiles:config.log.maxfiles,timestamp:true, level:config.log.lvlFile})
+             new (winston.transports.Console)({ 'timestamp': 'true', level: env.LOG_LVLCONSOLE }),
+             new (winston.transports.File)({ filename: env.LOG_FILENAME ,json:false, maxsize:env.LOG_MAXSIZE,maxFiles:env.LOG_MAXFILES,timestamp:true, level:env.LOG_LVLFILE})
      ]
 });
 
-var numCPUs = 1;
+
 
 
 serve = function (req, res, next) {
@@ -94,38 +94,33 @@ serve = function (req, res, next) {
 
 };
 
-if (cluster.isMaster) {
-   // Fork workers.
-    for (var i = 0; i < numCPUs; i++) {
-          cluster.fork();
-    }
+throng(start, {
+  workers: WORKERS,
+  lifetime: Infinity
+});
 
-     cluster.on('exit', function(worker, code, signal) {
-          console.log('worker ' + worker.process.pid + ' died');
-     });
-} else {
- var genesisContext=new serverContext.GenesisContext(config.simusPath, config.port);
+function start(id) {
+	var genesisContext=new serverContext.GenesisContext(env.SIMUSPATH, env.PORT);
+	logger.info('INIT - Started worker '+ id);
+	
+	logger.info('INIT - initialisation des simulateurs');
+	
+	genesisContext.load();
 
- logger.info('INIT - initialisation des simulateurs');
+	var server = restify.createServer();
 
- genesisContext.load();
+	server.get('.*',serve.bind(this));
+	server.post('.*', serve.bind(this));
+	server.put('.*', serve.bind(this));
+	server.del('.*', serve.bind(this));
+	server.head('.*',serve.bind(this));
 
- var server = restify.createServer();
+	server.on('connection', function (socket) {
+	 socket.setTimeout(10000);
+	});
 
- server.get('.*',serve.bind(this));
- server.post('.*', serve.bind(this));
- server.put('.*', serve.bind(this));
- server.del('.*', serve.bind(this));
- server.head('.*',serve.bind(this));
+	server.listen(env.PORT);
 
- server.on('connection', function (socket) {
-     socket.setTimeout(10000);
- });
-
- server.listen(config.port);
-
- logger.info("Server started listening on port " + config.port);
-
+	logger.info("Server started listening on port " + env.PORT);
 }
-
 

@@ -4,7 +4,7 @@
   "description": "Générateur et Simulateur de services",
   "main": "genesis.js",
   "scripts": {
-	"start": "node genesis.js",
+    "start": "node genesis.js",
     "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
   },
   "dependencies": {
@@ -15,7 +15,8 @@
     "elementtree": "x",
     "dateformat": "x",
     "restify": "x",
-    "dot": "x"
+    "dot": "x",
+    "throng": "~2.0.1"
   },
   "repository": "",
   "keywords": [
