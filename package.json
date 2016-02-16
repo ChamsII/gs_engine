@@ -1,0 +1,28 @@
+{
+  "name": "Genesis",
+  "version": "0.1.0",
+  "description": "Genesis",
+  "main": "Genesis.js",
+  "scripts": {
+	"start": "node Genesis.js",
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "x",
+    "cuid": "x",
+    "async": "x",
+    "winston": "x",
+    "elementtree": "x",
+    "dateformat": "x",
+    "restify": "x",
+    "bunyan": "x",
+    "dot": "x"
+  },
+  "repository": "",
+  "keywords": [
+    "Node.js"
+  ],
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}

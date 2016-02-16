@@ -1,0 +1,13 @@
+{
+  "simusPath": "./Simus",
+  "mode": "file",
+  "cacheActif":false,
+  "port":8080,
+  "log":{
+    "filename":"logs/genesis.log",
+    "maxsize": "10000000",
+    "maxfiles":"10",
+    "lvlConsole": "fatal",
+    "lvlFile": "info"
+  }
+}
