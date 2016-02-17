@@ -9,7 +9,7 @@ var steps = require('./lib/core/genesisSteps');
 var runContext = require('./lib/core/runContext');
 
 var env = process.env;
-var WORKERS = process.env.WEB_CONCURRENCY || 2;
+var WORKERS = process.env.WEB_CONCURRENCY || 1;
 
 global.logger = new (winston.Logger)({
      transports: [
@@ -99,14 +99,13 @@ throng(start, {
   lifetime: Infinity
 });
 
+
 function start(id) {
-	var genesisContext=new serverContext.GenesisContext(env.SIMUSPATH, env.PORT);
+	
 	logger.info('INIT - Started worker '+ id);
 	
 	logger.info('INIT - initialisation des simulateurs');
 	
-	genesisContext.load();
-
 	var server = restify.createServer();
 
 	server.get('.*',serve.bind(this));
@@ -116,11 +115,20 @@ function start(id) {
 	server.head('.*',serve.bind(this));
 
 	server.on('connection', function (socket) {
-	 socket.setTimeout(10000);
+		socket.setTimeout(10000);
+	});
+	
+	var genesisContext=new serverContext.GenesisContext(env.SIMUSPATH, env.PORT);
+	genesisContext.load(function(err){
+		if(err){
+			logger.error(err);
+			process.exit(1);
+		}
+		server.listen(env.PORT);
+		logger.info("Server started listening on port " + env.PORT);
 	});
 
-	server.listen(env.PORT);
+	
 
-	logger.info("Server started listening on port " + env.PORT);
 }
 
