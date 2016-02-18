@@ -10,6 +10,7 @@ var runContext = require('./lib/core/runContext');
 
 var env = process.env;
 var WORKERS = process.env.WEB_CONCURRENCY || 1;
+var genesisContext=new serverContext.GenesisContext(env.SIMUSPATH, env.PORT);
 
 global.logger = new (winston.Logger)({
      transports: [
@@ -29,7 +30,6 @@ serve = function (req, res, next) {
 	
     runCtxt.stats={};
     runCtxt.stats.startTime=new Date().getTime();
-	
     
     async.waterfall([
         function (callback) {
@@ -107,7 +107,7 @@ function start(id) {
 	logger.info('INIT - initialisation des simulateurs');
 	
 	var server = restify.createServer();
-
+    
 	server.get('.*',serve.bind(this));
 	server.post('.*', serve.bind(this));
 	server.put('.*', serve.bind(this));
@@ -118,7 +118,7 @@ function start(id) {
 		socket.setTimeout(10000);
 	});
 	
-	var genesisContext=new serverContext.GenesisContext(env.SIMUSPATH, env.PORT);
+	
 	genesisContext.load(function(err){
 		if(err){
 			logger.error(err);
