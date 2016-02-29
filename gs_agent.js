@@ -15,13 +15,18 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	
 */
-var restify = require('restify');
 var winston = require('winston');
-var throng = require('throng');
+var cluster = require('cluster');
+//var throng = require('throng');
+var http = require('http');
+global.__base = __dirname + '/';
+
 var gs = require('./lib/core/gs_engine');
+var admin = require('./lib/admin/admin');
 
 var env = process.env;
-var WORKERS = process.env.WEB_CONCURRENCY || 1;
+
+
 
 
 //global.genesisContext=new serverContext.GenesisContext(env.SIMUSPATH, env.PORT);
@@ -34,6 +39,27 @@ global.logger = new (winston.Logger)({
 });
 
 
+if (cluster.isMaster) {
+
+	logger.info('INIT - GS Agent Admin listen on port '+ env.ADMIN_PORT);
+	var master = admin.createAdmin().listen(env.ADMIN_PORT);
+	http.get('http://localhost:9080/start', (res) => {
+			logger.info(`AUTO START Got response: ${res.statusCode}`);
+			res.resume();
+	});
+	
+	
+}else {
+	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ env.PORT);
+	var gs_agent = gs.createServer().listen(env.PORT);
+
+}
+
+
+
+
+
+/*
 throng(start, {
   workers: WORKERS,
   lifetime: Infinity
@@ -41,42 +67,22 @@ throng(start, {
 
 
 function start(id) {
+
 	
 	logger.info('INIT - Started worker '+ id);
 	
 	logger.info('INIT - initialisation des simulateurs');
 	
-	var gs_agent = restify.createServer();
+	var gs_agent = http.createServer(gs.engine);
     
-	gs_agent.get('.*',gs.engine.bind(this));
-	gs_agent.post('.*', gs.engine.bind(this));
-	gs_agent.put('.*', gs.engine.bind(this));
-	gs_agent.del('.*', gs.engine.bind(this));
-	gs_agent.head('.*',gs.engine.bind(this));
-
 	gs_agent.on('connection', function (socket) {
 		socket.setTimeout(10000);
 	});
 	
-	gs_agent.listen(env.PORT);
+	gs_agent.listen(env.PORT);	
+	
 	logger.info("Server started listening on port " + env.PORT);
 	
-	
-	/*var gs_admin= restify.createServer();
-	
 
-	gs_admin.get('/reload',function(req,res,next){
-		logger.info("RELOAD context ... ");
-		
-		genesisContext.load(function(err){
-			if(err){
-				logger.error(err);
-				process.exit(1);
-			}
-			res.end();
-		});
-	});
-	
-	gs_admin.listen(env.ADMIN_PORT);*/
 }
-
+*/
