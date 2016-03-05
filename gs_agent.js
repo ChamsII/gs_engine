@@ -17,19 +17,13 @@
 */
 var winston = require('winston');
 var cluster = require('cluster');
-//var throng = require('throng');
 var http = require('http');
 global.__base = __dirname + '/';
 
-var gs = require('./lib/core/gs_engine');
+var gs = require('./lib/gs_engine');
 var admin = require('./lib/admin/admin');
 
 var env = process.env;
-
-
-
-
-//global.genesisContext=new serverContext.GenesisContext(env.SIMUSPATH, env.PORT);
 
 global.logger = new (winston.Logger)({
      transports: [
@@ -38,51 +32,14 @@ global.logger = new (winston.Logger)({
      ]
 });
 
-
 if (cluster.isMaster) {
-
 	logger.info('INIT - GS Agent Admin listen on port '+ env.ADMIN_PORT);
 	var master = admin.createAdmin().listen(env.ADMIN_PORT);
 	http.get('http://localhost:9080/start', (res) => {
-			logger.info(`AUTO START Got response: ${res.statusCode}`);
 			res.resume();
 	});
-	
-	
 }else {
 	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ env.PORT);
 	var gs_agent = gs.createServer().listen(env.PORT);
-
 }
 
-
-
-
-
-/*
-throng(start, {
-  workers: WORKERS,
-  lifetime: Infinity
-});
-
-
-function start(id) {
-
-	
-	logger.info('INIT - Started worker '+ id);
-	
-	logger.info('INIT - initialisation des simulateurs');
-	
-	var gs_agent = http.createServer(gs.engine);
-    
-	gs_agent.on('connection', function (socket) {
-		socket.setTimeout(10000);
-	});
-	
-	gs_agent.listen(env.PORT);	
-	
-	logger.info("Server started listening on port " + env.PORT);
-	
-
-}
-*/
