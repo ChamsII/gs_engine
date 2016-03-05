@@ -16,7 +16,6 @@
     "dateformat": "~1.0.12",
     "restify": "~4.0.4",
     "dot": "~1.0.3",
-    "throng": "~2.0.1",
     "mongodb": "~2.1.7"
   },
   "repository": "",
