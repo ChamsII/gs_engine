@@ -1,10 +1,10 @@
 {
-  "name": "Genesis",
+  "name": "gs_engine",
   "version": "0.1.0",
   "description": "Générateur et Simulateur de services",
-  "main": "genesis.js",
+  "main": "gs_agent.js",
   "scripts": {
-    "start": "node genesis.js",
+    "start": "node gs_agent.js",
     "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
   },
   "dependencies": {
@@ -16,7 +16,8 @@
     "dateformat": "~1.0.12",
     "restify": "~4.0.4",
     "dot": "~1.0.3",
-    "throng": "~2.0.1"
+    "throng": "~2.0.1",
+    "mongodb": "~2.1.7"
   },
   "repository": "",
   "keywords": [
