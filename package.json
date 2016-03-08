@@ -16,7 +16,8 @@
     "dateformat": "~1.0.12",
     "restify": "~4.0.4",
     "dot": "~1.0.3",
-    "mongodb": "~2.1.7"
+    "mongodb": "~2.1.7",
+    "rimraf": "~2.5.2"
   },
   "repository": "",
   "keywords": [
