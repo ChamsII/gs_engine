@@ -34,8 +34,9 @@ global.logger = new (winston.Logger)({
 
 if (cluster.isMaster) {
 	logger.info('INIT - GS Agent Admin listen on port '+ env.ADMIN_PORT);
+    
 	var master = admin.createAdmin().listen(env.ADMIN_PORT);
-	http.get('http://localhost:9080/start', (res) => {
+	http.get('http://localhost:'+env.ADMIN_PORT+'/start', (res) => {
 			res.resume();
 	});
 }else {
