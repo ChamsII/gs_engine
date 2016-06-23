@@ -2,3 +2,4 @@ node_modules/
 logs/*
 Simus/*
 npm-debug.log
+wmq-consumer.rsp
