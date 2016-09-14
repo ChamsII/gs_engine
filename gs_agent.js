@@ -32,6 +32,23 @@ global.logger = new (winston.Logger)({
      ]
 });
 
+global.counters=[];
+
+
+String.prototype.lpad = function(padString, length) {
+    var str = this;
+    while (str.length < length)
+        str = padString + str;
+    return str;
+}
+
+String.prototype.rpad = function(padString, length) {
+    var str = this;
+    while (str.length < length)
+        str = str + padString;
+    return str;
+}
+
 if (cluster.isMaster) {
 	logger.info('INIT - GS Agent Admin listen on port '+ env.ADMIN_PORT);
     
