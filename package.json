@@ -17,6 +17,7 @@
     "elementtree": "~0.1.6",
     "fs-extra": "^0.30.0",
     "js-beautify": "^1.6.3",
+    "jsonpath": "^0.2.9",
     "mongodb": "~2.1.7",
     "restify": "~4.0.4",
     "rimraf": "~2.5.2",
