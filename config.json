@@ -14,6 +14,12 @@
   "admin":{
 	 "port":"9080"
   },
+  "master":{
+    "hostname":"localhost",
+    "port":3000,
+    "path":"/agent/subscribe",
+    "freq":10000
+  },
   "connectors":{
     "MQ":{
       "cmd":"java",
