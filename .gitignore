@@ -3,3 +3,5 @@ logs/*
 Simus/*
 npm-debug.log
 wmq-consumer.rsp
+settings.json
+launch.json

@@ -18,17 +18,16 @@
 var winston = require('winston');
 var cluster = require('cluster');
 var http = require('http');
+global.config = require('./config.json');
 global.__base = __dirname + '/';
 
 var gs = require('./lib/gs_engine');
 var admin = require('./lib/admin/admin');
 
-var env = process.env;
-
 global.logger = new (winston.Logger)({
      transports: [
-             new (winston.transports.Console)({ 'timestamp': 'true', level: env.LOG_LVLCONSOLE }),
-             new (winston.transports.File)({ filename: env.LOG_FILENAME ,json:false, maxsize:env.LOG_MAXSIZE,maxFiles:env.LOG_MAXFILES,timestamp:true, level:env.LOG_LVLFILE})
+             new (winston.transports.Console)({ 'timestamp': 'true', level: config.log.lvlConsole }),
+             new (winston.transports.File)({ filename: config.log.filename ,json:false, maxsize:config.log.maxsize,maxFiles:config.log.maxfiles,timestamp:true, level:config.log.lvlFile})
      ]
 });
 
@@ -50,14 +49,14 @@ String.prototype.rpad = function(padString, length) {
 }
 
 if (cluster.isMaster) {
-	logger.info('INIT - GS Agent Admin listen on port '+ env.ADMIN_PORT);
+	logger.info('INIT - GS Agent Admin listen on port '+ config.admin.port);
     
-	var master = admin.createAdmin().listen(env.ADMIN_PORT);
-	http.get('http://localhost:'+env.ADMIN_PORT+'/start', (res) => {
+	var master = admin.createAdmin().listen(config.admin.port);
+	http.get('http://localhost:'+config.admin.port+'/start', (res) => {
 			res.resume();
 	});
 }else {
-	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ env.PORT);
-	var gs_agent = gs.createServer().listen(env.PORT);
+	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ config.PORT);
+	var gs_agent = gs.createServer().listen(config.PORT);
 }
 
