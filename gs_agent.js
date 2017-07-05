@@ -13,21 +13,34 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
+
 */
 var winston = require('winston');
 var cluster = require('cluster');
 var http = require('http');
-global.config = require('./config.json');
+var fs = require('fs-extra');
+
 global.__base = __dirname + '/';
+global.config = require('./lib/utils/config.js');
 
 var gs = require('./lib/gs_engine');
 var admin = require('./lib/admin/admin');
 
+//Initialisation des répertoires
+try {
+  fs.ensureFileSync(config.get('log.filename'));
+  fs.ensureDirSync(config.get('simusPath'));
+} catch (err) {
+  console.error(err);
+  process.exit(1);
+}
+
+
+
 global.logger = new (winston.Logger)({
      transports: [
-             new (winston.transports.Console)({ 'timestamp': 'true', level: config.log.lvlConsole }),
-             new (winston.transports.File)({ filename: config.log.filename ,json:false, maxsize:config.log.maxsize,maxFiles:config.log.maxfiles,timestamp:true, level:config.log.lvlFile})
+             new (winston.transports.Console)({ 'timestamp': 'true', level: config.get('log.lvlConsole') }),
+             new (winston.transports.File)({ filename: config.get('log.filename') ,json:false, maxsize:config.get('log.maxsize'),maxFiles:config.get('log.maxfiles'),timestamp:true, level:config.get('log.lvlFile')})
      ]
 });
 
@@ -49,14 +62,13 @@ String.prototype.rpad = function(padString, length) {
 }
 
 if (cluster.isMaster) {
-	logger.info('INIT - GS Agent Admin listen on port '+ config.admin.port);
-    
-	var master = admin.createAdmin().listen(config.admin.port);
-	http.get('http://localhost:'+config.admin.port+'/start', (res) => {
+	logger.info('INIT - GS Agent Admin listen on port '+ config.get('admin.port'));
+
+	var master = admin.createAdmin().listen(config.get('admin.port'));
+	http.get('http://localhost:'+config.get('admin.port')+'/start', (res) => {
 			res.resume();
 	});
 }else {
-	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ config.PORT);
-	var gs_agent = gs.createServer().listen(config.PORT);
+	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ config.get('PORT'));
+	var gs_agent = gs.createServer().listen(config.get('PORT'));
 }
-
