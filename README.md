@@ -16,6 +16,153 @@ npm install
 ```
 
 ## Configuration
+L'engine peut être configuré en déposant un fichier 'config.json' à la racine.
+
+Le format est le suivant:
+
+```JSON
+{
+    "simusPath": {
+      "doc": "Chemin d'accès aux services pour le mode 'file'",
+      "default": "../Simus",
+      "format": "string"
+    },
+    "mode": {
+      "default": "file",
+      "format": [
+        "file",
+        "mongodb"
+      ],
+      "doc": "Storage mode (file, mongodb)"
+    },
+    "cacheActif": {
+      "default": false,
+      "format": "boolean",
+      "doc": "Activation du cache de l'accès aux données"
+    },
+    "PORT": {
+      "doc": "Port d'écoute des services exposés",
+      "format": "port",
+      "default": 9876
+    },
+    "replica": {
+      "doc": "Nombre de process à lancer",
+      "format": "number",
+      "default": 1
+    },
+    "log": {
+      "properties": {
+        "filename": {
+          "doc": "Fichier de log",
+          "default": "../logs/genesis.log",
+          "format": "string"
+        },
+        "maxsize": {
+          "doc": "Taille maximum du fichier de log avant rotation",
+          "default": 10000000,
+          "format": "number"
+        },
+        "maxfiles": {
+          "doc": "Nombre de fichier historique",
+          "default": 10,
+          "format": "number"
+        },
+        "lvlConsole": {
+          "doc": "Niveau de log dans la console",
+          "default": "info",
+          "format": [
+            "error",
+            "debug",
+            "info"
+          ]
+        },
+        "lvlFile": {
+          "doc": "Niveau de log dans le fichier",
+          "default": "error",
+          "format": [
+            "error",
+            "debug",
+            "info"
+          ]
+        }
+      }
+    },
+    "admin": {
+      "properties": {
+        "port": {
+          "doc": "Port pour l'administration de l'agent",
+          "default": 9080,
+          "format": "port"
+        }
+      }
+    },
+    "master": {
+      "properties": {
+        "active": {
+          "doc": "Activation de la souscription à un master",
+          "format": "boolean",
+          "default": false
+        },
+        "url": {
+          "doc": "Url de souscription au master",
+          "format": "url",
+          "default": "http://localhost:3000/agent/subscribe"
+        },
+        "freq": {
+          "doc": "Fréquence de check du master en millisecondes",
+          "format": "number",
+          "default": 10000
+        }
+      }
+    },
+    "connectors": {
+      "properties": {
+        "lib": {
+          "doc": "Chemin d'accès aux librairies de connecteurs",
+          "default": "../lib",
+          "format": "string"
+        },
+        "MQ": {
+          "properties": {
+            "cmd": {
+              "doc": "Executable Java",
+              "format": "string",
+              "default": "java"
+            },
+            "bin": {
+              "doc": "Librairie du connecteur",
+              "default": "com.julian.genesis.mqconnect.MQConnector",
+              "format": "string"
+            },
+            "loglvl": {
+              "doc": "Niveau de log du connecteur",
+              "default": "error",
+              "format": [
+                "error",
+                "debug",
+                "info"
+              ]
+            },
+            "logconf": {
+              "doc": "Fichier de configuration des logs du connecteur",
+              "format": "string",
+              "default": "../lib/log4j2.xml"
+            }
+          }
+        }
+      }
+    },
+    "about": {
+      "properties": {
+        "tag": {
+          "doc": "Tag d'identification de l'agent",
+          "format": "string",
+          "default": "agent 1"
+        }
+      }
+    }
+  }
+```
 
 ## API Reference
 
