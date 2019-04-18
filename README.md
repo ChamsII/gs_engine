@@ -10,7 +10,7 @@ GeneSiS-engine permet de créer des mocks de services. Il a été créé dans le
 ```Shell
 mkdir genesis
 cd genesis
-git clone https://github.com/Ju-Li-An/gs_engine
+git clone https://github.com/ChamsII/gs_engine.git
 cd gs_engine
 npm install
 ```
@@ -163,6 +163,104 @@ Le format est le suivant:
     }
   }
 ```
+
+##FEEDERS
+
+A : TransferProperies
+
+1 : Depuis la requête
+
+feederIDQUERY
+feederIDXPATH
+feederIDPATH
+feederIDHEADER
+feederIDJPATH
+feederIDPOSITION
+feederIDTLV
+
+
+2 : Colone du fichier CSV depuis la requête 
+
+isFeeder : true / false
+feederName : le nom de la colone dans le fichier CSV
+
+NB : 1 seul feeder par requête. Si plusieurs isFeeder=true, seul le dernier est pris en compte
+
+```JSON
+{
+    "name": "lastName",
+    "source": "JSON_PATH",
+    "path": "$.lastName",
+    "template": "",
+    "isUnique": false,
+    "isFeeder": true,
+    "feederName": "lastName"
+}
+```
+
+B : FeederProperties 
+
+Le feederProperties comprend :
+
+csvFile : le nom du fichier de données jdd.csv
+type : Type template response JSON/XML
+isRandom : Numéro de ligne dans le fichier JDD à lire. Par défaut égale à 0.
+value : un tableau d'objet dont : 
+	fileKey : La clé dans le fichier de donnée 
+	baliseResponse : le champ à modifier dans le template response ( Exemple : firstName le cas JSON ou n2:firstName le cas XML)
+
+```JSON
+{
+  "csvFile": "fichierTest.csv",
+  "value": [
+    {
+      "fileKey": "lastName",
+      "baliseResponse": "lastName"
+    },
+    {
+      "fileKey": "firstName",
+      "baliseResponse": "firstName"
+    }
+  ],
+  "type": "JSON",
+  "isRandom": 2
+}
+```
+	
+C : Le JDD
+
+Le fichier de JDD est chargé au démarrage de l'usine.	
+feederPropertiesFiles[] dans gs_agent.js
+
+```JSON
+{
+  "id": 1, 
+  "name" : "fichierTest.csv", 
+  "path": "Feeders/fichierTest.csv", 
+  "value": ""
+}
+```
+
+
+************************* TEMPLATE ************************
+
+Retourner un template en fonction de la requête.
+Trois paramètres supplémentaire dans transferProperties :
+
+isUnique : le paramètre dans la requête est unique. Par défault false
+template : Le nom du template retourner (Exemple "template": "SearchClient"  qui correspond à default-SearchClient-Template.xml )
+value : Si isUnique = false 
+
+```JSON
+{
+  "name": "feederIDPATH",
+  "source": "BODY_XPATH",
+  "path": ".//feederID",
+  "template": "SearchClient",
+  "isUnique": true
+}
+```
+
 
 ## API Reference
 

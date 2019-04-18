@@ -13,38 +13,42 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+	
 */
 var winston = require('winston');
 var cluster = require('cluster');
 var http = require('http');
-var fs = require('fs-extra');
-
 global.__base = __dirname + '/';
-global.config = require('./lib/utils/config.js');
 
 var gs = require('./lib/gs_engine');
 var admin = require('./lib/admin/admin');
 
-//Initialisation des répertoires
-try {
-  fs.ensureFileSync(config.get('log.filename'));
-  fs.ensureDirSync(config.get('simusPath'));
-} catch (err) {
-  console.error(err);
-  process.exit(1);
-}
+var feedersExtractor = require('./lib/data/tp/feedersExtractor');
 
 
+require('dotenv').config();
+var env = process.env;
 
-global.logger = new (winston.Logger)({
-     transports: [
-             new (winston.transports.Console)({ 'timestamp': 'true', level: config.get('log.lvlConsole') }),
-             new (winston.transports.File)({ filename: config.get('log.filename') ,json:false, maxsize:config.get('log.maxsize'),maxFiles:config.get('log.maxfiles'),timestamp:true, level:config.get('log.lvlFile')})
-     ]
-});
+global.logger = winston.createLogger({
+    level: env.LOG_LVLCONSOLE,
+    format: winston.format.combine(
+        winston.format.splat(),
+        winston.format.simple()
+    ),
+    transports: [
+      new winston.transports.Console({ 'timestamp': 'true', level: env.LOG_LVLCONSOLE }),
+      new winston.transports.File({ filename: env.LOG_FILENAME ,json:false, maxsize:env.LOG_MAXSIZE,maxFiles:env.LOG_MAXFILES,timestamp:true, level:env.LOG_LVLFILE})
+    ]
+  });
 
 global.counters=[];
+
+
+// Global feeders files
+global.feederPropertiesFiles=[
+    {"id": 1, "name" : "fichierTest.csv", "path": "Feeders/fichierTest.csv", "value": ""}
+];
+feedersExtractor.readFeederPropertiesFiles();
 
 
 String.prototype.lpad = function(padString, length) {
@@ -62,13 +66,14 @@ String.prototype.rpad = function(padString, length) {
 }
 
 if (cluster.isMaster) {
-	logger.info('INIT - GS Agent Admin listen on port '+ config.get('admin.port'));
-
-	var master = admin.createAdmin().listen(config.get('admin.port'));
-	http.get('http://localhost:'+config.get('admin.port')+'/start', (res) => {
+	logger.info('INIT - GS Agent Admin listen on port '+ env.ADMIN_PORT);
+    
+	var master = admin.createAdmin().listen(env.ADMIN_PORT);
+	http.get('http://localhost:'+env.ADMIN_PORT+'/start', (res) => {
 			res.resume();
 	});
 }else {
-	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ config.get('PORT'));
-	var gs_agent = gs.createServer().listen(config.get('PORT'));
+	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ env.PORT);
+	var gs_agent = gs.createServer().listen(env.PORT);
 }
+

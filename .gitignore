@@ -1,7 +1,13 @@
 node_modules/
 logs/*
 Simus/*
+Tests/
+Dockerfile
 npm-debug.log
+package-lock.json
+Procfile
+start.sh
+stop.sh
 wmq-consumer.rsp
 settings.json
 launch.json
