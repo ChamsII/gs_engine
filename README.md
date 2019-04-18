@@ -164,7 +164,7 @@ Le format est le suivant:
   }
 ```
 
-##FEEDERS
+## FEEDERS
 
 A : TransferProperies
 
@@ -242,7 +242,7 @@ feederPropertiesFiles[] dans gs_agent.js
 ```
 
 
-************************* TEMPLATE ************************
+## TEMPLATE
 
 Retourner un template en fonction de la requête.
 Trois paramètres supplémentaire dans transferProperties :
