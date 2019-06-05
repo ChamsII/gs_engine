@@ -71,7 +71,6 @@ String.prototype.rpad = function(padString, length) {
 
 if (cluster.isMaster) {
 
-
 	logger.info('INIT - GS Agent Admin listen on port '+ env.ADMIN_PORT);
     
 	var master = admin.createAdmin().listen(env.ADMIN_PORT);
@@ -85,7 +84,7 @@ if (cluster.isMaster) {
         let agent = {
             id : parseInt( response.data.nbrAgent ) + 1,
             name: env.NAME,
-            hostname: env.HOSTNAME,
+            hostname: env.AGENT_HOST,
             admin_port: env.ADMIN_PORT,
             agent_port: env.PORT,
             docker: env.DOCKER
@@ -105,7 +104,6 @@ if (cluster.isMaster) {
     })
     .catch(function (error) {
     })
-
     
 
 
