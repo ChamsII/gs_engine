@@ -18,6 +18,8 @@
 var winston = require('winston');
 var cluster = require('cluster');
 var http = require('http');
+var axios = require('axios');
+
 global.__base = __dirname + '/';
 
 var gs = require('./lib/gs_engine');
@@ -65,13 +67,48 @@ String.prototype.rpad = function(padString, length) {
     return str;
 }
 
+
+
 if (cluster.isMaster) {
+
+
 	logger.info('INIT - GS Agent Admin listen on port '+ env.ADMIN_PORT);
     
 	var master = admin.createAdmin().listen(env.ADMIN_PORT);
 	http.get('http://localhost:'+env.ADMIN_PORT+'/start', (res) => {
 			res.resume();
-	});
+    });
+
+    axios.get(env.AGENT_ADMIN+'/agent/nbrAgent' )
+    .then(function (response) {
+
+        let agent = {
+            id : parseInt( response.data.nbrAgent ) + 1,
+            name: env.NAME,
+            hostname: env.HOSTNAME,
+            admin_port: env.ADMIN_PORT,
+            agent_port: env.PORT,
+            docker: env.DOCKER
+        }
+
+        axios.post(env.AGENT_ADMIN+'/agent/create', agent )
+        .then(function (response) {
+            if( response.data.message == "saving"){
+                logger.info('INIT - Agent ['+env.NAME+'] added in the agents lists');
+            }else{
+                logger.error('ERROR INIT - Agent ['+env.NAME+'] in the agents lists');
+            }
+        })
+        .catch(function (error) {
+        });
+
+    })
+    .catch(function (error) {
+    })
+
+    
+
+
 }else {
 	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ env.PORT);
 	var gs_agent = gs.createServer().listen(env.PORT);
