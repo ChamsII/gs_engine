@@ -109,6 +109,7 @@ if (cluster.isMaster) {
 
 }else {
 	logger.info('INIT - GS Agent Worker '+ cluster.worker.id+'['+cluster.worker.process.pid+'] listen on port '+ env.PORT);
-	var gs_agent = gs.createServer().listen(env.PORT);
+    var gs_agent = gs.createServer().listen(env.PORT);
+
 }
 
