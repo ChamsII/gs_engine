@@ -4,7 +4,8 @@
   "description": "Générateur et Simulateur de services",
   "main": "gs_agent.js",
   "scripts": {
-    "start": "node -r dotenv/config gs_agent.js"
+    "start": "node -r dotenv/config gs_agent.js",
+    "dev": "nodemon -r dotenv/config gs_agent.js"
   },
   "dependencies": {
     "async": "^2.6.2",
@@ -22,6 +23,7 @@
     "js-beautify": "^1.9.1",
     "jsonpath": "^1.0.1",
     "mongodb": "^3.2.2",
+    "nodemon": "^1.19.1",
     "restify": "^8.2.0",
     "restify-cors-middleware": "^1.1.1",
     "rimraf": "^2.6.3",
@@ -34,7 +36,7 @@
   "keywords": [
     "Node.js"
   ],
-  "author": "Ju-Li-An",
+  "author": "chamsII",
   "license": "GNU",
   "readmeFilename": "README.md"
 }
